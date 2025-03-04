@@ -55,6 +55,45 @@ impl ExeState {
                 ByteCode::LoadNil(index) => {
                     self.set_stack(index, Value::Nil);
                 }
+
+                ByteCode::SetGlobal(dst, src) => {
+                    let name = proto.constants[dst as usize].clone();
+                    if let Value::String(key) = name {
+                        let value = self.stack[src as usize].clone();
+                        self.globals.insert(key, value);
+                    } else {
+                        panic!("Expected string, got {:?}", name);
+                    }
+                }
+
+                ByteCode::SetGlobalConst(dst, src) => {
+                    let name = proto.constants[dst as usize].clone();
+                    if let Value::String(name) = name {
+                        let value = proto.constants[src as usize].clone();
+                        self.globals.insert(name, value);
+                    } else {
+                        panic!("Expected string, got {:?}", name);
+                    }
+                }
+
+                ByteCode::SetGlobalGlobal(dst, src) => {
+                    let name = proto.constants[dst as usize].clone();
+                    if let Value::String(name) = name {
+                        let src = &proto.constants[src as usize];
+                        if let Value::String(src) = src {
+                            let value = self.globals.get(src)
+                                .unwrap_or(&Value::Nil)
+                                .clone();
+                            self.globals.insert(name, value);
+                        } else {
+                            panic!("Expected string, got {:?}", src);
+                        }
+
+                    } else {
+                        panic!("Expected string, got {:?}", name);
+                    }
+                }
+
                 ByteCode::Move(dst, src) => {
                     self.set_stack(dst, self.stack[src as usize].clone());
                 }

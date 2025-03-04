@@ -1,14 +1,13 @@
-function max(num1, num2)
-
-    if (num1 > num2) then
-       result = num1;
-    else
-       result = num2;
-    end
- 
-    return result;
-end
-
-print(max(10, 4))
-max = 10
-print(max(10, 4))
+local a = 456
+a = 123
+print(a)
+a = a
+print(a)
+a = g
+print(a)
+g = 123
+print(g)
+g = a
+print(g)
+g = g2
+print(g)
